@@ -3,6 +3,8 @@
 ## Overview
 This project implements a **Spring Boot–based backend** for a Transport Management System (TMS).  
 The system supports load posting, bidding, booking, transporter management, capacity validation, and concurrency-safe operations.
+The system simulates a competetive market environment, where the Shippers can choose only the best Bidders, by allowing
+"Over Bidding" and preventing "Over Booking"
 
 ## Tech Stack
 - Java 17  
@@ -37,3 +39,6 @@ The system includes tests using **JUnit 5** and coverage reporting via **JaCoCo*
 - Coverage reports generated through Maven  
 
 ![Coverage](https://github.com/user-attachments/assets/6edbab1d-7157-4dc9-bcab-fa201be2062a)
+
+## Future Addition(s):
+- Queue Based Notification services to shippers and Transporters.
