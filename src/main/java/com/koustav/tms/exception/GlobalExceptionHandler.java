@@ -12,47 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Global exception handler for all controllers
- * Catches exceptions and converts them to proper HTTP responses
- * 
- * ═══════════════════════════════════════════════════════════════════
- * RATIONALE: Why This Class Exists
- * ═══════════════════════════════════════════════════════════════════
- * 
- * Without this class, exceptions would:
- * 1. Bubble up to Spring's default handler
- * 2. Return ugly error pages or generic 500 errors
- * 3. Expose stack traces to clients (security risk!)
- * 4. Give no useful information to API consumers
- * 
- * With @ControllerAdvice:
- * ✅ Catch exceptions from ALL controllers in one place
- * ✅ Convert exceptions to proper HTTP status codes
- * ✅ Return consistent ErrorResponse format
- * ✅ Hide stack traces from clients
- * ✅ Log errors for debugging
- * ✅ Professional API behavior
- * 
- * How it works:
- * Controller throws exception → Spring intercepts → 
- * GlobalExceptionHandler catches → Returns ResponseEntity<ErrorResponse>
- * 
- * ═══════════════════════════════════════════════════════════════════
- * EXCEPTION TO HTTP STATUS MAPPING
- * ═══════════════════════════════════════════════════════════════════
- * 
- * ResourceNotFoundException            → 404 NOT FOUND
- * InvalidStatusTransitionException     → 400 BAD REQUEST
- * InsufficientCapacityException        → 400 BAD REQUEST
- * ConflictException                    → 409 CONFLICT
- * OptimisticLockException              → 409 CONFLICT
- * MethodArgumentNotValidException      → 400 BAD REQUEST
- * IllegalStateException (from entity)  → 500 INTERNAL ERROR (catch-all)
- * Any other Exception                  → 500 INTERNAL ERROR (catch-all)
- * 
- * ═══════════════════════════════════════════════════════════════════
- */
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     
