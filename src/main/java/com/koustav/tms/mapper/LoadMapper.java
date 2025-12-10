@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.koustav.tms.dto.BidResponse;
-import com.koustav.tms.dto.LoadDetailResponse;
-import com.koustav.tms.dto.LoadResponse;
+import com.koustav.tms.dto.response.BidResponse;
+import com.koustav.tms.dto.response.LoadDetailResponse;
+import com.koustav.tms.dto.response.LoadResponse;
 import com.koustav.tms.entity.Bid;
 import com.koustav.tms.entity.BookingStatus;
 import com.koustav.tms.entity.Load;

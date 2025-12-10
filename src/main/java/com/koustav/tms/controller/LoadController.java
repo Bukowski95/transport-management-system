@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.koustav.tms.dto.BidResponse;
-import com.koustav.tms.dto.LoadDetailResponse;
-import com.koustav.tms.dto.LoadRequest;
-import com.koustav.tms.dto.LoadResponse;
+import com.koustav.tms.dto.request.LoadRequest;
+import com.koustav.tms.dto.response.BidResponse;
+import com.koustav.tms.dto.response.LoadDetailResponse;
+import com.koustav.tms.dto.response.LoadResponse;
 import com.koustav.tms.entity.LoadStatus;
 import com.koustav.tms.service.LoadService;
 

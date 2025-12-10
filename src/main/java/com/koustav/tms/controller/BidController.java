@@ -1,7 +1,7 @@
 package com.koustav.tms.controller;
 
-import com.koustav.tms.dto.BidRequest;
-import com.koustav.tms.dto.BidResponse;
+import com.koustav.tms.dto.request.BidRequest;
+import com.koustav.tms.dto.response.BidResponse;
 import com.koustav.tms.entity.BidStatus;
 import com.koustav.tms.service.BidService;
 import jakarta.validation.Valid;

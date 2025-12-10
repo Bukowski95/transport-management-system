@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.koustav.tms.dto.TransporterRequest;
-import com.koustav.tms.dto.TransporterResponse;
-import com.koustav.tms.dto.UpdateTrucksRequest;
+import com.koustav.tms.dto.request.TransporterRequest;
+import com.koustav.tms.dto.request.UpdateTrucksRequest;
+import com.koustav.tms.dto.response.TransporterResponse;
 import com.koustav.tms.service.TransporterService;
 
 import jakarta.validation.Valid;

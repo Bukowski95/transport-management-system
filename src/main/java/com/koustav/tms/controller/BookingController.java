@@ -1,7 +1,7 @@
 package com.koustav.tms.controller;
 
-import com.koustav.tms.dto.BookingRequest;
-import com.koustav.tms.dto.BookingResponse;
+import com.koustav.tms.dto.request.BookingRequest;
+import com.koustav.tms.dto.response.BookingResponse;
 import com.koustav.tms.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

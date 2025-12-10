@@ -1,6 +1,6 @@
 package com.koustav.tms.mapper;
 
-import com.koustav.tms.dto.BookingResponse;
+import com.koustav.tms.dto.response.BookingResponse;
 import com.koustav.tms.entity.Booking;
 
 public class BookingMapper {

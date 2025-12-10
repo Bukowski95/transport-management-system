@@ -1,6 +1,6 @@
 package com.koustav.tms.mapper;
 
-import com.koustav.tms.dto.TransporterResponse;
+import com.koustav.tms.dto.response.TransporterResponse;
 import com.koustav.tms.entity.Transporter;
 
 public class TransporterMapper {

@@ -1,6 +1,6 @@
 package com.koustav.tms.mapper;
 
-import com.koustav.tms.dto.BidResponse;
+import com.koustav.tms.dto.response.BidResponse;
 import com.koustav.tms.entity.Bid;
 
 public class BidMapper {
@@ -21,11 +21,5 @@ public class BidMapper {
             .status(bid.getStatus())
             .dateSubmitted(bid.getDateSubmitted())
             .build();
-    }
-
-    public static BidResponse toResponseWithScore(Bid bid, double score) {
-        BidResponse response = toResponse(bid);
-        response.setScore(score);
-        return response;
     }
 }
