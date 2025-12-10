@@ -41,6 +41,7 @@ If T1 is booked for L1 and exhausts all trucks, then even if T1 has placed a bid
 
 
 📡 API Documentation
+
 A Postman collection is included in the repository. Import it into Postman to test all endpoints.
 
 
@@ -48,6 +49,7 @@ A Postman collection is included in the repository. Import it into Postman to te
 
 
 🧪 Testing
+
 The project uses JUnit 5 for comprehensive testing:
 
 Unit tests for service layer logic
