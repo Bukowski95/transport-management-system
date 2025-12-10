@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.koustav.tms.dto.BookingRequest;
-import com.koustav.tms.dto.BookingResponse;
+import com.koustav.tms.dto.request.BookingRequest;
+import com.koustav.tms.dto.response.BookingResponse;
 import com.koustav.tms.entity.Bid;
 import com.koustav.tms.entity.BidStatus;
 import com.koustav.tms.entity.Booking;
@@ -29,7 +29,6 @@ import com.koustav.tms.repository.LoadRepository;
 import com.koustav.tms.repository.TransporterRepository;
 
 @Service
-@Transactional
 public class BookingService {
     
     @Autowired
@@ -43,57 +42,58 @@ public class BookingService {
 
     @Autowired
     private TransporterRepository transporterRepository;
+    
+    @Autowired
+    private BidTransactionService bidTransactionService;  // ← NEW: Inject separate service
 
+    @Transactional(readOnly = true)
     public BookingResponse getBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
             .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId", bookingId));
         
-            return BookingMapper.toResponse(booking);
+        return BookingMapper.toResponse(booking);
     }
 
-    /**
-     * accept the best bid
-     * @param request
-     * @return
-     */
+    @Transactional
     public BookingResponse acceptBid(BookingRequest request) {
         try {
             Bid bid = bidRepository.findById(request.getBidId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bid", "bidId", request.getBidId()));
             
-            //validate bid status
+            // Validate bid status
             if (bid.getStatus() != BidStatus.PENDING) {
-                throw new InvalidStatusTransitionException("Can only accept PENDING bids. Current status: " + bid.getStatus());
+                throw new InvalidStatusTransitionException(
+                    "Can only accept PENDING bids. Current status: " + bid.getStatus());
             }
 
             Load load = bid.getLoad();
             Transporter transporter = bid.getTransporter();
 
-            // How many more trucks needed for the load to be shipped?
+            // Calculate remaining capacity
             Integer allocatedSum = bookingRepository.sumAllocatedTrucksByLoadIdAndStatus(
                 load.getLoadId(), BookingStatus.CONFIRMED);
             int currentlyAllocated = allocatedSum != null ? allocatedSum : 0;
             int remainingTrucks = load.getNoOfTrucks() - currentlyAllocated;
 
-            // does the load need these many trucks offered?
+            // Validate load capacity
             if (bid.getTrucksOffered() > remainingTrucks) {
                 throw new InsufficientCapacityException(
                     String.format("Load only needs %d more trucks, but bid offers %d",
                         remainingTrucks, bid.getTrucksOffered()));
             }
 
-            // Prevent overBooking
+            // Phase 2: Prevent overbooking
             if (!transporter.canAcceptBooking(load.getTruckType(), bid.getTrucksOffered())) {
-                // Bid is auto rejected, actually by the transporter
-                bid.setStatus(BidStatus.REJECTED);
-                bidRepository.save(bid);
-
+                // ✅ Call separate service (goes through Spring proxy!)
+                bidTransactionService.rejectBidInNewTransaction(bid.getBidId());
+                
+                // Now throw exception (bid rejection already committed)
                 throw new InsufficientCapacityException(
-                    String.format("Transporter no longer has %s capacity",
+                    String.format("Transporter no longer has sufficient %s capacity. Bid automatically rejected.",
                         load.getTruckType()));
             }
 
-            // deduct booked no. of trucks(triggers optimistic lock on save)
+            // Deduct trucks (triggers optimistic lock check on save)
             transporter.deductTrucks(load.getTruckType(), bid.getTrucksOffered());
             transporterRepository.save(transporter);
 
@@ -110,15 +110,18 @@ public class BookingService {
             
             Booking saved = bookingRepository.save(booking);
 
-            // Update BidStatus
+            // Update bid status
             bid.setStatus(BidStatus.ACCEPTED);
             bidRepository.save(bid);
 
-            // if all the remaining trucks are booked change load status to booked
-            if (remainingTrucks - bid.getTrucksOffered() == 0) {
+            // Update load status if fully booked
+            int newRemaining = remainingTrucks - bid.getTrucksOffered();
+            if (newRemaining == 0) {
                 load.setStatus(LoadStatus.BOOKED);
-                loadRepository.save(load);
             }
+            // ALWAYS save load (triggers version check for concurrent requests)
+            //Shipper accepts overbooking on a same load, we should throw exception
+            loadRepository.save(load); 
 
             return BookingMapper.toResponse(saved);
         
@@ -130,15 +133,16 @@ public class BookingService {
         }
     }
 
-
+    @Transactional
     public void cancelBooking(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-            .orElseThrow(() -> new ResourceNotFoundException("Booking", "bokingId", bookingId));
+            .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId", bookingId));
         
         if (booking.getStatus() == BookingStatus.CANCELLED) {
             throw new InvalidStatusTransitionException("Booking is already cancelled.");
         }
 
+        // Cancel booking
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
 
@@ -148,7 +152,7 @@ public class BookingService {
         transporter.restoreTrucks(load.getTruckType(), booking.getAllocatedTrucks());
         transporterRepository.save(transporter);
 
-        //update Load status after cancellation
+        // Update load status
         updateStatusAfterCancellation(load);
     }
 
@@ -159,18 +163,21 @@ public class BookingService {
         int remainingTrucks = load.getNoOfTrucks() - currentlyAllocated;
 
         if (remainingTrucks == load.getNoOfTrucks()) {
+            // All bookings cancelled - check for pending bids
             long pendingBids = bidRepository.countByLoad_LoadIdAndStatus(
                 load.getLoadId(), BidStatus.PENDING);
+            
             if (pendingBids > 0) {
                 load.setStatus(LoadStatus.OPEN_FOR_BIDS);
             } else {
                 load.setStatus(LoadStatus.POSTED);
             }
         } else if (remainingTrucks > 0) {
+            // Partial cancellation
             load.setStatus(LoadStatus.OPEN_FOR_BIDS);
         }
+        // else: remainingTrucks == 0, stay BOOKED
 
         loadRepository.save(load);
     }
-
 }

@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.koustav.tms.dto.TransporterRequest;
-import com.koustav.tms.dto.TransporterResponse;
-import com.koustav.tms.dto.UpdateTrucksRequest;
+import com.koustav.tms.dto.request.TransporterRequest;
+import com.koustav.tms.dto.request.UpdateTrucksRequest;
+import com.koustav.tms.dto.response.TransporterResponse;
 import com.koustav.tms.entity.Transporter;
 import com.koustav.tms.exception.ResourceNotFoundException;
 import com.koustav.tms.mapper.TransporterMapper;

@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.koustav.tms.dto.BidRequest;
-import com.koustav.tms.dto.BidResponse;
+import com.koustav.tms.dto.request.BidRequest;
+import com.koustav.tms.dto.response.BidResponse;
 import com.koustav.tms.entity.Bid;
 import com.koustav.tms.entity.BidStatus;
 import com.koustav.tms.entity.Load;

@@ -8,10 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.koustav.tms.dto.BidResponse;
-import com.koustav.tms.dto.LoadDetailResponse;
-import com.koustav.tms.dto.LoadRequest;
-import com.koustav.tms.dto.LoadResponse;
+import com.koustav.tms.dto.request.LoadRequest;
+import com.koustav.tms.dto.response.BidResponse;
+import com.koustav.tms.dto.response.LoadDetailResponse;
+import com.koustav.tms.dto.response.LoadResponse;
 import com.koustav.tms.entity.Bid;
 import com.koustav.tms.entity.BidStatus;
 import com.koustav.tms.entity.Load;
@@ -22,6 +22,7 @@ import com.koustav.tms.mapper.BidMapper;
 import com.koustav.tms.mapper.LoadMapper;
 import com.koustav.tms.repository.BidRepository;
 import com.koustav.tms.repository.LoadRepository;
+import com.koustav.tms.strategy.BidScoringStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,9 @@ public class LoadService {
 
     @Autowired
     private LoadMapper loadMapper;
+
+    @Autowired
+    private BidScoringStrategy bidScoringStrategy;
 
     public LoadResponse createLoad(LoadRequest request) {
         Load load = Load.builder()
@@ -103,10 +107,9 @@ public class LoadService {
             }
 
             // Sort bids by score in descending order (highest score first)
-            // score = (1/proposedRate)*0.7 + (rating/5)*0.3
             pendingBids.sort((b1, b2) -> {
-                double score1 = (1.0 / b1.getProposedRate()) * 0.7 + (b1.getTransporter().getRating() / 5.0) * 0.3;
-                double score2 = (1.0 / b2.getProposedRate()) * 0.7 + (b2.getTransporter().getRating() / 5.0) * 0.3;
+                double score1 = bidScoringStrategy.calculateScore(b1);
+                double score2 = bidScoringStrategy.calculateScore(b2);
                 return Double.compare(score2, score1); // Descending order
             });
             
