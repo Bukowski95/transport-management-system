@@ -82,7 +82,7 @@ class LoadServiceTest {
         loadRequest = LoadRequest.builder()
             .shipperId("SHIP123")
             .loadingCity("New York")
-            .unLoadingCity("Los Angeles")
+            .unloadingCity("Los Angeles")
             .productType("Steel")
             .truckType("Flatbed")
             .noOfTrucks(5)

@@ -48,7 +48,7 @@ public class LoadService {
         Load load = Load.builder()
             .shipperId(request.getShipperId())
             .loadingCity(request.getLoadingCity())
-            .unloadingCity(request.getUnLoadingCity())
+            .unloadingCity(request.getUnloadingCity())
             .productType(request.getProductType())
             .truckType(request.getTruckType())
             .noOfTrucks(request.getNoOfTrucks())
