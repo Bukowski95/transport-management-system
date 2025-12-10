@@ -25,7 +25,7 @@ public class LoadRequest {
     private String loadingCity;
 
     @NotBlank(message = "Unloading city is required")
-    private String unLoadingCity;
+    private String unloadingCity;
 
     @NotNull(message = "Loading date is required")
     private Timestamp loadingDate;
