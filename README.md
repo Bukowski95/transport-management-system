@@ -5,30 +5,32 @@ Transport Management System (TMS) Backend
 This is a Spring Boot-based backend system for a Transport Management System (TMS) designed to handle load posting, bidding, booking, and transporter management with complex business rules and concurrency control.
 
 🛠 Tech Stack
-Java 17
 
-Spring Boot 3.2+
+-->Java 17
 
-Spring Data JPA
+-->Spring Boot 3.2+
 
-PostgreSQL
+-->Spring Data JPA
 
-Maven
+-->PostgreSQL
 
-JUnit 5 (for unit and integration testing)
+-->Maven
 
-JaCoCo (for code coverage reporting)
+-->JUnit 5 (for unit and integration testing)
+
+-->JaCoCo (for code coverage reporting)
 
 ✅ Key Features
-Load creation, bidding, and booking workflows
 
-Transporter capacity validation and truck allocation
+-->Load creation, bidding, and booking workflows
 
-Multi-truck load allocation support
+-->Transporter capacity validation and truck allocation
 
-Optimistic locking to prevent overbooking
+-->Multi-truck load allocation support
 
-Permission-based bidding: A transporter can bid for multiple loads, but cannot be booked if their trucks are exhausted
+-->Optimistic locking to prevent overbooking
+
+-->Permission-based bidding: A transporter can bid for multiple loads, but cannot be booked if their trucks are exhausted
 
 
 🗄 Database Schema
@@ -40,7 +42,7 @@ Permission-based bidding: A transporter can bid for multiple loads, but cannot b
 
 📡 API Documentation
 
-A Postman collection is included in the repository. Import it into Postman to test all endpoints.
+--> A Postman collection json is included in the repository. Import it into Postman to test all endpoints.
 
 
 
@@ -48,13 +50,13 @@ A Postman collection is included in the repository. Import it into Postman to te
 
 🧪 Testing
 
-The project uses JUnit 5 for comprehensive testing:
+-->The project uses JUnit 5 for comprehensive testing:
 
-Unit tests for service layer logic
+-->Unit tests for service layer logic
 
-Integration tests for repository and controller layers
+-->Integration tests for repository and controller layers
 
-Test coverage enforced via JaCoCo Maven plugin
+-->Test coverage enforced via JaCoCo Maven plugin
 
 
 <img width="736" height="150" alt="Screenshot 2025-12-10 at 4 18 35 PM" src="https://github.com/user-attachments/assets/6edbab1d-7157-4dc9-bcab-fa201be2062a" />
