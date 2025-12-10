@@ -7,9 +7,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
@@ -21,7 +23,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="bid")
+@Table(name = "bid", indexes = {
+    @Index(name = "idx_bid_load_id", columnList = "load_id"),
+    @Index(name = "idx_bid_transporter_id", columnList = "transporter_id"),
+    @Index(name = "idx_bid_status", columnList = "status"),
+    @Index(name = "idx_bid_date_submitted", columnList = "date_submitted DESC"),
+    @Index(name = "idx_bid_composite_load_status", columnList = "load_id, status"),
+    @Index(name = "idx_bid_composite_transporter_status", columnList = "transporter_id, status")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,11 +44,13 @@ public class Bid {
     private UUID bidId;
 
     @ManyToOne
-    @JoinColumn(name="load_id", nullable=false)
+    @JoinColumn(name="load_id", nullable=false,
+                foreignKey = @ForeignKey(name = "fk_bid_load"))
     private Load load;
 
     @ManyToOne
-    @JoinColumn(name="transporter_id", nullable=false)
+    @JoinColumn(name="transporter_id", nullable=false, 
+                foreignKey = @ForeignKey(name = "fk_bid_transporter"))
     private Transporter transporter;
 
     @Column(name="proposed_rate", updatable=false, nullable=false)

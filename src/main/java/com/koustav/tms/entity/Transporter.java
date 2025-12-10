@@ -1,6 +1,5 @@
 package com.koustav.tms.entity;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,15 +9,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="transporter")
+@Table(name = "transporter", indexes = {
+    @Index(name = "idx_transporter_company_name", columnList = "company_name"),
+    @Index(name = "idx_transporter_rating", columnList = "rating DESC")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,6 +38,10 @@ public class Transporter {
     
     @Column(name="rating", nullable=false)
     private double rating;
+
+    @Version  // ← OPTIMISTIC LOCKING - auto-increments on each update
+    @Column(name="version")
+    private Long version;
 
     @Convert(converter = TruckMapConverter.class)
     @Column(name="available_trucks", nullable=false, columnDefinition="jsonb")
@@ -94,13 +101,5 @@ public class Transporter {
      */
     public boolean canAcceptBooking(String truckType, int count) {
         return count <= availableTrucks.getOrDefault(truckType, 0);
-    }
-
-    @PrePersist  // ← JPA lifecycle callback: runs before INSERT
-    protected void onCreate() {
-        if (availableTrucks == null) {
-            availableTrucks = new HashMap<> ();
-        }
-        rating = 0.0;
     }
 }

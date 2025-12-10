@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -20,7 +21,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="load")
+@Table(name = "load", indexes = {
+    @Index(name = "idx_load_shipper_id", columnList = "shipper_id"),
+    @Index(name = "idx_load_status", columnList = "status"),
+    @Index(name = "idx_load_date_posted", columnList = "date_posted DESC"),
+    @Index(name = "idx_load_composite_shipper_status", columnList = "shipper_id, status"),
+    @Index(name = "idx_load_loading_date", columnList = "loading_date")
+})
 @Getter
 @Setter
 @NoArgsConstructor
