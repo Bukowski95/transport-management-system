@@ -26,10 +26,10 @@ import lombok.Setter;
 @Table(name = "bid", indexes = {
     @Index(name = "idx_bid_load_id", columnList = "load_id"),
     @Index(name = "idx_bid_transporter_id", columnList = "transporter_id"),
-    @Index(name = "idx_bid_status", columnList = "status"),
+    @Index(name = "idx_bid_status", columnList = "bid_status"),
     @Index(name = "idx_bid_date_submitted", columnList = "date_submitted DESC"),
-    @Index(name = "idx_bid_composite_load_status", columnList = "load_id, status"),
-    @Index(name = "idx_bid_composite_transporter_status", columnList = "transporter_id, status")
+    @Index(name = "idx_bid_composite_load_status", columnList = "load_id, bid_status"),
+    @Index(name = "idx_bid_composite_transporter_status", columnList = "transporter_id, bid_status")
 })
 @Getter
 @Setter
