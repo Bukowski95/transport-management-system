@@ -30,8 +30,6 @@ Optimistic locking to prevent overbooking
 
 Permission-based bidding: A transporter can bid for multiple loads, but cannot be booked if their trucks are exhausted
 
-Example Scenario:
-If T1 is booked for L1 and exhausts all trucks, then even if T1 has placed a bid for L2, the bid cannot be converted into a booking due to insufficient available trucks.
 
 🗄 Database Schema
 
