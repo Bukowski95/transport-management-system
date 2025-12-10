@@ -37,8 +37,13 @@ If T1 is booked for L1 and exhausts all trucks, then even if T1 has placed a bid
 
 <img width="4063" height="7251" alt="Untitled diagram-2025-12-10-104650" src="https://github.com/user-attachments/assets/764d67ff-fe2b-405f-9822-d8d2faf4ba66" />
 
+
+
+
 📡 API Documentation
 A Postman collection is included in the repository. Import it into Postman to test all endpoints.
+
+
 
 
 
