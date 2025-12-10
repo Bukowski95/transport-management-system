@@ -1,0 +1,784 @@
+{
+  "info": {
+    "name": "TMS - Transport Management System (IMPROVED)",
+    "description": "Complete API collection for Transport Management System with all 15 endpoints, proper error scenarios, and the overbidding test case.\n\n**How to use:**\n1. Start application: mvn spring-boot:run\n2. Import this collection into Postman\n3. Run requests in order - responses will contain IDs\n4. Copy IDs from responses and paste into Variables tab\n5. Variables auto-populate in subsequent requests\n\n**Variable Setup:**\nClick collection name → Variables tab → Update values as you test\n\n**Quick Start (No Variables):**\nOr just manually replace {{variable}} with actual IDs from responses!",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "loadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T1_transporterId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T2_transporterId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T3_transporterId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T1_bidId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T2_bidId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T3_L2_bidId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T3_L3_bidId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "T2_bookingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "L2_loadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "L3_loadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bidId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transporterId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "fullyBookedLoadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cancelledLoadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "acceptedBidId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cancelledBookingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cancelLoadId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Setup (Loads & Transporters)",
+      "item": [
+        {
+          "name": "Create Load L1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipperId\": \"SHIP123\",\n  \"loadingCity\": \"Mumbai\",\n  \"unloadingCity\": \"Delhi\",\n  \"productType\": \"Electronics\",\n  \"truckType\": \"TRAILER\",\n  \"noOfTrucks\": 5,\n  \"weight\": 1000.0,\n  \"weightUnit\": \"KG\",\n  \"loadingDate\": \"2024-12-15T10:00:00\"\n}"
+            },
+            "url": "http://localhost:8080/load",
+            "description": "Creates a new load for shipper SHIP123 requiring 5 TRAILER trucks. Save the returned loadId for use in subsequent requests."
+          }
+        },
+        {
+          "name": "Get Load by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/load/{{loadId}}",
+            "description": "Retrieves complete load details including status, remaining trucks, and active bids. Replace {{loadId}} with actual UUID."
+          }
+        },
+        {
+          "name": "List All Loads (No Filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/load?page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["load"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            },
+            "description": "Returns paginated list of all loads in the system."
+          }
+        },
+        {
+          "name": "List Loads (Filter by Shipper)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/load?shipperId=SHIP123&page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["load"],
+              "query": [
+                {"key": "shipperId", "value": "SHIP123"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            },
+            "description": "Returns all loads created by specific shipper (SHIP123)."
+          }
+        },
+        {
+          "name": "List Loads (Filter by Status)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/load?status=POSTED&page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["load"],
+              "query": [
+                {"key": "status", "value": "POSTED", "description": "Options: POSTED, OPEN_FOR_BIDS, BOOKED, CANCELLED"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            },
+            "description": "Returns loads with specific status. Valid statuses: POSTED, OPEN_FOR_BIDS, BOOKED, CANCELLED."
+          }
+        },
+        {
+          "name": "Register Transporter T1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Fast Logistics Pvt Ltd\",\n  \"rating\": 4.5,\n  \"availableTrucks\": {\n    \"TRAILER\": 10,\n    \"CONTAINER\": 5\n  }\n}"
+            },
+            "url": "http://localhost:8080/transporter",
+            "description": "Registers first transporter with 10 TRAILER and 5 CONTAINER trucks. Save transporterId for bidding."
+          }
+        },
+        {
+          "name": "Register Transporter T2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Speed Transport Co\",\n  \"rating\": 4.8,\n  \"availableTrucks\": {\n    \"TRAILER\": 8,\n    \"CONTAINER\": 3\n  }\n}"
+            },
+            "url": "http://localhost:8080/transporter",
+            "description": "Registers second transporter with higher rating but fewer trucks. This transporter will compete with T1 for best bids."
+          }
+        },
+        {
+          "name": "Get Transporter by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/transporter/{{transporterId}}",
+            "description": "Retrieves transporter details including current available truck counts. Use this to verify truck deduction/restoration."
+          }
+        },
+        {
+          "name": "Update Transporter Trucks",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availableTrucks\": {\n    \"TRAILER\": 20,\n    \"CONTAINER\": 15,\n    \"FLATBED\": 5\n  }\n}"
+            },
+            "url": "http://localhost:8080/transporter/{{transporterId}}/trucks",
+            "description": "Updates transporter's available truck fleet. This replaces the entire availableTrucks map."
+          }
+        }
+      ],
+      "description": "Initial setup: Create loads that need transportation and register transporters who will bid on them."
+    },
+    {
+      "name": "2. Bidding Flow",
+      "item": [
+        {
+          "name": "T1 Submits Bid (3 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadId\": \"{{loadId}}\",\n  \"transporterId\": \"{{T1_transporterId}}\",\n  \"proposedRate\": 50000.0,\n  \"trucksOffered\": 3\n}"
+            },
+            "url": "http://localhost:8080/bid",
+            "description": "T1 bids to provide 3 trucks at ₹50,000. Load status changes from POSTED to OPEN_FOR_BIDS on first bid."
+          }
+        },
+        {
+          "name": "T2 Submits Bid (2 trucks, better rate)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadId\": \"{{loadId}}\",\n  \"transporterId\": \"{{T2_transporterId}}\",\n  \"proposedRate\": 45000.0,\n  \"trucksOffered\": 2\n}"
+            },
+            "url": "http://localhost:8080/bid",
+            "description": "T2 bids with better rate but fewer trucks. Has higher rating (4.8) which affects best-bid score."
+          }
+        },
+        {
+          "name": "T1 Submits Another Bid (4 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadId\": \"{{loadId}}\",\n  \"transporterId\": \"{{T1_transporterId}}\",\n  \"proposedRate\": 48000.0,\n  \"trucksOffered\": 4\n}"
+            },
+            "url": "http://localhost:8080/bid",
+            "description": "T1 submits alternative bid offering more trucks. Same transporter can have multiple pending bids on same load."
+          }
+        },
+        {
+          "name": "List All Bids for Load",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/bid?loadId={{loadId}}&page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["bid"],
+              "query": [
+                {"key": "loadId", "value": "{{loadId}}"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            },
+            "description": "Shows all bids for specific load, regardless of status."
+          }
+        },
+        {
+          "name": "List Bids by Transporter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/bid?transporterId={{T1_transporterId}}&page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["bid"],
+              "query": [
+                {"key": "transporterId", "value": "{{T1_transporterId}}"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            },
+            "description": "Shows all bids submitted by specific transporter across all loads."
+          }
+        },
+        {
+          "name": "List Bids by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/bid?status=PENDING&page=0&size=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["bid"],
+              "query": [
+                {"key": "status", "value": "PENDING", "description": "Options: PENDING, ACCEPTED, REJECTED"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            },
+            "description": "Filters bids by status. Valid: PENDING, ACCEPTED, REJECTED."
+          }
+        },
+        {
+          "name": "Get Best Bids (Sorted by Score)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/load/{{loadId}}/best-bids",
+            "description": "Returns bids sorted by score: (1/rate)*0.7 + (rating/5)*0.3. T2's bid should rank highest (low rate + high rating)."
+          }
+        },
+        {
+          "name": "Get Specific Bid by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/bid/{{bidId}}",
+            "description": "Retrieves details of specific bid including current status."
+          }
+        },
+        {
+          "name": "Reject Bid",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/bid/{{bidId}}/reject",
+            "description": "Shipper manually rejects a bid. Can only reject PENDING bids. Status changes to REJECTED."
+          }
+        }
+      ],
+      "description": "Transporters submit bids on loads. Multiple bids allowed from same transporter."
+    },
+    {
+      "name": "3. Booking Flow",
+      "item": [
+        {
+          "name": "Accept Best Bid (T2 - 2 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bidId\": \"{{T2_bidId}}\"\n}"
+            },
+            "url": "http://localhost:8080/booking",
+            "description": "Accepts T2's bid. System deducts 2 trucks from T2's available count and creates CONFIRMED booking."
+          }
+        },
+        {
+          "name": "Verify T2 Trucks Deducted",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/transporter/{{T2_transporterId}}",
+            "description": "Verify T2's TRAILER trucks reduced from 8 to 6 (deducted 2). This proves truck deduction works."
+          }
+        },
+        {
+          "name": "Check Load After First Booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/load/{{loadId}}",
+            "description": "Load should show remainingTrucks=3 (5 total - 2 allocated). Status still OPEN_FOR_BIDS."
+          }
+        },
+        {
+          "name": "Accept Second Bid (T1 - 3 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bidId\": \"{{T1_bidId}}\"\n}"
+            },
+            "url": "http://localhost:8080/booking",
+            "description": "Accepts T1's bid for remaining 3 trucks. Load becomes BOOKED (5/5 trucks allocated)."
+          }
+        },
+        {
+          "name": "Verify T1 Trucks Deducted",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/transporter/{{T1_transporterId}}",
+            "description": "Verify T1's TRAILER trucks reduced from 10 to 7 (deducted 3)."
+          }
+        },
+        {
+          "name": "Check Load Fully Booked",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/load/{{loadId}}",
+            "description": "Load status should be BOOKED with remainingTrucks=0. All capacity allocated."
+          }
+        },
+        {
+          "name": "Get Booking Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/booking/{{bookingId}}",
+            "description": "Retrieves booking details including allocated trucks, final rate, and status."
+          }
+        }
+      ],
+      "description": "Shipper accepts bids creating confirmed bookings. Trucks are deducted from transporter inventory."
+    },
+    {
+      "name": "4. Cancellation Flow",
+      "item": [
+        {
+          "name": "Cancel Booking (T2)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/booking/{{T2_bookingId}}/cancel",
+            "description": "Cancels T2's booking. System restores 2 trucks to T2's available count."
+          }
+        },
+        {
+          "name": "Verify T2 Trucks Restored",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/transporter/{{T2_transporterId}}",
+            "description": "Verify T2's TRAILER trucks increased from 6 back to 8 (restored 2). Proves truck restoration works."
+          }
+        },
+        {
+          "name": "Check Load After Cancellation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/load/{{loadId}}",
+            "description": "Load status changes from BOOKED back to OPEN_FOR_BIDS. remainingTrucks=2 (5 total - 3 from T1)."
+          }
+        },
+        {
+          "name": "Verify Cancelled Booking Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/booking/{{T2_bookingId}}",
+            "description": "Booking status should be CANCELLED. Other details remain unchanged."
+          }
+        },
+        {
+          "name": "Cancel Load",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/load/{{cancelLoadId}}/cancel",
+            "description": "Shipper cancels load. Can only cancel POSTED or OPEN_FOR_BIDS loads, not BOOKED loads."
+          }
+        }
+      ],
+      "description": "Either party can cancel bookings. System automatically restores transporter's truck capacity."
+    },
+    {
+      "name": "5. Edge Cases & Error Scenarios",
+      "item": [
+        {
+          "name": "🎯 OVERBIDDING TEST - Register T3 (2 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Small Transport Ltd\",\n  \"rating\": 4.0,\n  \"availableTrucks\": {\n    \"TRAILER\": 2\n  }\n}"
+            },
+            "url": "http://localhost:8080/transporter",
+            "description": "Create transporter with only 2 trucks to test overbidding scenario."
+          }
+        },
+        {
+          "name": "🎯 Create Load L2 (needs 2 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipperId\": \"SHIP456\",\n  \"loadingCity\": \"Chennai\",\n  \"unloadingCity\": \"Bangalore\",\n  \"productType\": \"Furniture\",\n  \"truckType\": \"TRAILER\",\n  \"noOfTrucks\": 2,\n  \"weight\": 500.0,\n  \"weightUnit\": \"KG\",\n  \"loadingDate\": \"2024-12-20T10:00:00\"\n}"
+            },
+            "url": "http://localhost:8080/load"
+          }
+        },
+        {
+          "name": "🎯 Create Load L3 (needs 2 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipperId\": \"SHIP456\",\n  \"loadingCity\": \"Hyderabad\",\n  \"unloadingCity\": \"Mumbai\",\n  \"productType\": \"Electronics\",\n  \"truckType\": \"TRAILER\",\n  \"noOfTrucks\": 2,\n  \"weight\": 300.0,\n  \"weightUnit\": \"KG\",\n  \"loadingDate\": \"2024-12-21T10:00:00\"\n}"
+            },
+            "url": "http://localhost:8080/load"
+          }
+        },
+        {
+          "name": "🎯 T3 Bids on L2 (2 trucks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadId\": \"{{L2_loadId}}\",\n  \"transporterId\": \"{{T3_transporterId}}\",\n  \"proposedRate\": 40000.0,\n  \"trucksOffered\": 2\n}"
+            },
+            "url": "http://localhost:8080/bid",
+            "description": "T3 bids 2 trucks on L2. Phase 1 check passes (2 <= 2)."
+          }
+        },
+        {
+          "name": "🎯 T3 Bids on L3 (2 trucks - SAME trucks!)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadId\": \"{{L3_loadId}}\",\n  \"transporterId\": \"{{T3_transporterId}}\",\n  \"proposedRate\": 35000.0,\n  \"trucksOffered\": 2\n}"
+            },
+            "url": "http://localhost:8080/bid",
+            "description": "T3 bids same 2 trucks on L3. Phase 1 check passes (optimistic bidding allows this)."
+          }
+        },
+        {
+          "name": "🎯 Accept L2 Bid (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bidId\": \"{{T3_L2_bidId}}\"\n}"
+            },
+            "url": "http://localhost:8080/booking",
+            "description": "Accept T3's bid on L2. Trucks deducted: 2 → 0. Expected: 201 Created"
+          }
+        },
+        {
+          "name": "🎯 Verify T3 Has 0 Trucks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/transporter/{{T3_transporterId}}",
+            "description": "T3's TRAILER count should be 0. All trucks allocated to L2."
+          }
+        },
+        {
+          "name": "🎯 Accept L3 Bid (SHOULD FAIL - 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bidId\": \"{{T3_L3_bidId}}\"\n}"
+            },
+            "url": "http://localhost:8080/booking",
+            "description": "Try to accept T3's bid on L3. Phase 2 check fails (2 > 0). Expected: 400 Bad Request with 'Transporter no longer has sufficient capacity. Bid automatically rejected.'"
+          }
+        },
+        {
+          "name": "🎯 Verify L3 Bid Auto-Rejected",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/bid/{{T3_L3_bidId}}",
+            "description": "Bid status should be REJECTED (auto-rejected by system). This proves two-phase validation works!"
+          }
+        },
+        {
+          "name": "❌ Try Cancel BOOKED Load (Should Fail)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/load/{{fullyBookedLoadId}}/cancel",
+            "description": "Try to cancel a load with status BOOKED. Expected: 400 Bad Request - 'Cannot cancel a load with status BOOKED'"
+          }
+        },
+        {
+          "name": "❌ Try Bid on CANCELLED Load (Should Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loadId\": \"{{cancelledLoadId}}\",\n  \"transporterId\": \"{{T1_transporterId}}\",\n  \"proposedRate\": 50000.0,\n  \"trucksOffered\": 3\n}"
+            },
+            "url": "http://localhost:8080/bid",
+            "description": "Try to bid on cancelled load. Expected: 400 Bad Request - 'Cannot bid on a load with status CANCELLED'"
+          }
+        },
+        {
+          "name": "❌ Try Accept Already ACCEPTED Bid (Should Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bidId\": \"{{acceptedBidId}}\"\n}"
+            },
+            "url": "http://localhost:8080/booking",
+            "description": "Try to accept already accepted bid. Expected: 400 Bad Request - 'Can only accept PENDING bids. Current status: ACCEPTED'"
+          }
+        },
+        {
+          "name": "❌ Try Cancel Already Cancelled Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/booking/{{cancelledBookingId}}/cancel",
+            "description": "Try to cancel already cancelled booking. Expected: 400 Bad Request - 'Booking is already cancelled'"
+          }
+        },
+        {
+          "name": "❌ Invalid Load ID (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/load/00000000-0000-0000-0000-000000000000",
+            "description": "Request non-existent load. Expected: 404 Not Found with proper error response."
+          }
+        },
+        {
+          "name": "❌ Invalid Transporter ID (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/transporter/00000000-0000-0000-0000-000000000000",
+            "description": "Request non-existent transporter. Expected: 404 Not Found."
+          }
+        },
+        {
+          "name": "❌ Invalid Bid ID (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/bid/00000000-0000-0000-0000-000000000000",
+            "description": "Request non-existent bid. Expected: 404 Not Found."
+          }
+        },
+        {
+          "name": "❌ Invalid Booking ID (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/booking/00000000-0000-0000-0000-000000000000",
+            "description": "Request non-existent booking. Expected: 404 Not Found."
+          }
+        }
+      ],
+      "description": "Tests error handling, validation, and the critical overbidding prevention scenario (two-phase validation)."
+    }
+  ]
+}
