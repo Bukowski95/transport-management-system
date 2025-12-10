@@ -1,4 +1,4 @@
-package com.koustav.tms.dto;
+package com.koustav.tms.dto.response;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -25,5 +25,4 @@ public class BidResponse {
     private int trucksOffered;
     private BidStatus status;
     private Timestamp dateSubmitted;
-    private Double score; // Optional field for ranking
 }

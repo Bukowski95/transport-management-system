@@ -1,4 +1,4 @@
-package com.koustav.tms.dto;
+package com.koustav.tms.dto.request;
 
 import java.sql.Timestamp;
 

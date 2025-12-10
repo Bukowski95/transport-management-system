@@ -1,6 +1,6 @@
-package com.koustav.tms.dto;
+package com.koustav.tms.dto.request;
 
-import java.util.UUID;
+import java.util.Map;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingRequest {
+public class UpdateTrucksRequest {
 
-    @NotNull(message = "Bid ID is required")
-    private UUID bidId;
+    @NotNull(message = "Available trucks map is required")
+    private Map<String, Integer> availableTrucks;
 }

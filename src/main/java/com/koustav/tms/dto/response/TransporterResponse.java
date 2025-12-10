@@ -1,4 +1,4 @@
-package com.koustav.tms.dto;
+package com.koustav.tms.dto.response;
 
 import java.util.Map;
 import java.util.UUID;
