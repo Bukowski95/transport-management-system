@@ -1,63 +1,39 @@
-Transport Management System (TMS) Backend
+# Transport Management System (TMS) – Backend
 
-📌 Overview
+## Overview
+This project implements a **Spring Boot–based backend** for a Transport Management System (TMS).  
+The system supports load posting, bidding, booking, transporter management, capacity validation, and concurrency-safe operations.
 
-This is a Spring Boot-based backend system for a Transport Management System (TMS) designed to handle load posting, bidding, booking, and transporter management with complex business rules and concurrency control.
+## Tech Stack
+- Java 17  
+- Spring Boot 3.2+  
+- Spring Data JPA  
+- PostgreSQL  
+- Maven  
+- JUnit 5  
+- JaCoCo (coverage reports)
 
-🛠 Tech Stack
+## Key Features
+- Load creation, bidding, and booking workflows  
+- Transporter capacity validation and truck allocation  
+- Multi-truck support for large loads  
+- Optimistic locking to prevent over-booking  
+- Permission-based bidding  
+  - Transporters can bid on multiple loads  
+  - Bookings are restricted when trucks are exhausted  
 
--->Java 17
+## Database Schema
+![Database Schema](https://github.com/user-attachments/assets/764d67ff-fe2b-405f-9822-d8d2faf4ba66)
 
--->Spring Boot 3.2+
+## API Documentation
+A **Postman collection** is included in the repository.  
+Import the JSON file into Postman to test all available endpoints.
 
--->Spring Data JPA
+## Testing
+The system includes tests using **JUnit 5** and coverage reporting via **JaCoCo**.
 
--->PostgreSQL
+- Unit tests for service logic  
+- Integration tests for repositories and controllers  
+- Coverage reports generated through Maven  
 
--->Maven
-
--->JUnit 5 (for unit and integration testing)
-
--->JaCoCo (for code coverage reporting)
-
-✅ Key Features
-
--->Load creation, bidding, and booking workflows
-
--->Transporter capacity validation and truck allocation
-
--->Multi-truck load allocation support
-
--->Optimistic locking to prevent overbooking
-
--->Permission-based bidding: A transporter can bid for multiple loads, but cannot be booked if their trucks are exhausted
-
-
-🗄 Database Schema
-
-<img width="4063" height="7251" alt="Untitled diagram-2025-12-10-104650" src="https://github.com/user-attachments/assets/764d67ff-fe2b-405f-9822-d8d2faf4ba66" />
-
-
-
-
-📡 API Documentation
-
---> A Postman collection json is included in the repository. Import it into Postman to test all endpoints.
-
-
-
-
-
-🧪 Testing
-
--->The project uses JUnit 5 for comprehensive testing:
-
--->Unit tests for service layer logic
-
--->Integration tests for repository and controller layers
-
--->Test coverage enforced via JaCoCo Maven plugin
-
-
-<img width="736" height="150" alt="Screenshot 2025-12-10 at 4 18 35 PM" src="https://github.com/user-attachments/assets/6edbab1d-7157-4dc9-bcab-fa201be2062a" />
-
+![Coverage](https://github.com/user-attachments/assets/6edbab1d-7157-4dc9-bcab-fa201be2062a)
