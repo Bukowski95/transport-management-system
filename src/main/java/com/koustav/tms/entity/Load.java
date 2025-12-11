@@ -1,8 +1,11 @@
 package com.koustav.tms.entity;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -78,7 +82,11 @@ public class Load {
     
     @Column(name="date_posted", nullable=false, updatable=false)
     private Timestamp datePosted;
-    
+
+    @OneToMany(mappedBy = "load", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Bid> bids = new ArrayList<>();
+
     @PrePersist  // ← JPA lifecycle callback: runs before INSERT
     protected void onCreate() {
         if (datePosted == null) {
@@ -88,6 +96,6 @@ public class Load {
             status = LoadStatus.POSTED;
         }
     }
-    
+
 
 }
