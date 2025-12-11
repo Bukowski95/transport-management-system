@@ -73,8 +73,10 @@ public class LoadService {
         Load load = loadRepository.findById(loadId)
             .orElseThrow(() -> new ResourceNotFoundException("Load", "loadId", loadId));
 
-        // Get active bids (PENDING only)
-        List<Bid> activeBids = bidRepository.findByLoad_LoadIdAndStatus(loadId, BidStatus.PENDING);
+        // Get active bids (PENDING only), still lazy fetches, @OneToMany by default is laxy loaded
+        List<Bid> activeBids = load.getBids().stream()
+            .filter(bid -> bid.getStatus() == BidStatus.PENDING)
+            .toList();
 
         return loadMapper.toDetailResponse(load, activeBids);
     }
