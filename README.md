@@ -1,10 +1,24 @@
-# Transport Management System (TMS) – Backend
+## Transport Management System (TMS) - Logistics Marketplace Backend
 
-## Overview
-This project implements a **Spring Boot–based backend** for a Transport Management System (TMS).  
-The system supports load posting, bidding, booking, transporter management, capacity validation, and concurrency-safe operations.
-The system simulates a competetive market environment, where the Shippers can choose only the best Bidders, by allowing
-"Over Bidding" and preventing "Over Booking"
+This project implements a **competitive bidding marketplace** that connects shippers with transporters, enabling efficient logistics operations through automated price discovery and optimal carrier selection.
+
+### What It Does
+The platform creates a **competitive market environment** where:
+- **Shippers** post their transportation needs and receive competitive bids from multiple transporters
+- **Transporters** compete by submitting bids based on their rates and service quality
+- The system automatically selects the **best bidder** using a scoring algorithm (70% rate, 30% rating)
+- **Over-bidding is allowed** - transporters can update their bids to stay competitive
+- **Over-booking is prevented** - ensures trucks aren't double-booked through concurrency-safe operations
+
+### Key Features
+- **Automated Price Discovery**: Market-driven pricing through competitive bidding
+- **Smart Carrier Selection**: Algorithm-based selection considering both cost and quality
+- **Real-time Load Tracking**: Track shipment status from posting to delivery
+- **Capacity Validation**: Prevents overbooking and ensures reliable capacity management
+- **Concurrent Transaction Safety**: Handles multiple simultaneous bookings without conflicts
+
+### Technical Implementation
+Built with Spring Boot backend featuring RESTful APIs, PostgreSQL database with optimistic locking for concurrency control, comprehensive test coverage (85%), and proper error handling with input validation.
 
 ## Tech Stack
 - Java 17  
