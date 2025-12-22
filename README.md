@@ -28,15 +28,7 @@ Built with Spring Boot backend featuring RESTful APIs, PostgreSQL database with 
 - Maven  
 - JUnit 5  
 - JaCoCo (coverage reports)
-
-## Key Features
-- Load creation, bidding, and booking workflows  
-- Transporter capacity validation and truck allocation  
-- Multi-truck support for large loads  
-- Optimistic locking to prevent over-booking  
-- Permission-based bidding  
-  - Transporters can bid on multiple loads  
-  - Bookings are restricted when trucks are exhausted  
+  
 
 ## Database Schema
 ![Database Schema](https://github.com/user-attachments/assets/764d67ff-fe2b-405f-9822-d8d2faf4ba66)
